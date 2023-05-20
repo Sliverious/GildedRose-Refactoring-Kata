@@ -10,7 +10,7 @@ final class GildedRose
      * @param Item[] $items
      */
     public function __construct(
-        private array $items
+        public array $items
     ) {
     }
 
