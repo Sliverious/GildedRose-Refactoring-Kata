@@ -6,9 +6,9 @@ namespace GildedRose;
 
 use GildedRose\Items\AgedCheese;
 use GildedRose\Items\BackStagePass;
+use GildedRose\Items\Conjured;
 use GildedRose\Items\Legendary;
 use GildedRose\Items\Normal;
-use GildedRose\Items\Conjured;
 
 class UpdateableItemFactory
 {
