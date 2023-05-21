@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GildedRose\Items;
+namespace GildedRose\Items\Traits;
 
 use GildedRose\Item;
 

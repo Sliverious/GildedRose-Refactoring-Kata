@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace GildedRose\Items;
 
 use GildedRose\Item;
+use GildedRose\Items\Traits\ChecksExpiration;
+use GildedRose\Items\Traits\ClampsValues;
 use GildedRose\UpdateableItem;
 
 class BackStagePass implements UpdateableItem
