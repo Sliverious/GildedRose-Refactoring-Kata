@@ -8,6 +8,7 @@ use GildedRose\Items\AgedCheese;
 use GildedRose\Items\BackStagePass;
 use GildedRose\Items\Legendary;
 use GildedRose\Items\Normal;
+use GildedRose\Items\Conjured;
 
 class UpdateableItemFactory
 {
@@ -15,15 +16,24 @@ class UpdateableItemFactory
     {
         switch ($item) {
             case self::isLegendary($item):
-                return new Legendary($item);
+                $updater = new Legendary($item);
+                break;
             case self::isAgedCheese($item):
-                return new AgedCheese($item);
+                $updater = new AgedCheese($item);
+                break;
             case self::isBackStagePass($item):
-                return new BackStagePass($item);
+                $updater = new BackStagePass($item);
+                break;
             default:
-                return new Normal($item);
+                $updater = new Normal($item);
                 break;
         }
+
+        if (self::isConjured($item)) {
+            return new Conjured($updater);
+        }
+
+        return $updater;
     }
 
     public static function isLegendary(Item $item): bool
@@ -39,5 +49,10 @@ class UpdateableItemFactory
     public static function isBackStagePass(Item $item): bool
     {
         return str_contains($item->name, 'Backstage passes');
+    }
+
+    public static function isConjured(Item $item): bool
+    {
+        return str_contains($item->name, 'Conjured');
     }
 }

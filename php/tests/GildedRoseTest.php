@@ -63,7 +63,7 @@ class GildedRoseTest extends TestCase
             ],
             'Conjured item' => [
                 new Item('Conjured Mana Cake', 3, 6),
-                new Item('Conjured Mana Cake', 2, 5),
+                new Item('Conjured Mana Cake', 2, 4),
             ],
         ];
     }
