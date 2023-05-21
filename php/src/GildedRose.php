@@ -16,60 +16,55 @@ final class GildedRose
 
     public function updateQuality(): void
     {
-        // Update item quality.
         foreach ($this->items as $item) {
-            if ($this->isExpired($item)) {
-                if ($this->isLegendary($item)) {
-                    // Legendary items do not decay.
+            if ($this->isLegendary($item)) {
+                // Legendary items do not decay or change in quality.
+                continue;
+            }
+
+            if ($this->isAgedCheese($item)) {
+                $item->sellIn--;
+                if ($this->isExpired($item)) {
+                    $item->quality -= 2;
+
                     continue;
                 }
-                if ($this->isBackStagePass($item)) {
-                    // Concert tickets are worthless after the event.
-                    $item->quality = 0;
-                }
-                // Expired items decay twice as fast.
-                $item->quality -= 2;
+
+                $item->quality++;
 
                 continue;
             }
 
-            // Nonexpired items.
-            switch ($item) {
-                case $this->isAgedCheese($item):
+            if ($this->isBackStagePass($item)) {
+                $item->sellIn--;
+                if ($this->isExpired($item)) {
+                    // Concert tickets are worthless after the event.
+                    $item->quality = 0;
+
+                    continue;
+                }
+
+                $item->quality++;
+                if ($item->sellIn <= 10) {
+                    // Within ten days of the concert, tickets gain an additional +1 quality.
                     $item->quality++;
-                    break;
-                case $this->isBackStagePass($item):
+                }
+                if ($item->sellIn <= 5) {
+                    // Within five days of the concert, tickets gain an additional +1 quality.
                     $item->quality++;
+                }
 
-                    if ($item->sellIn <= 10) {
-                        // Within ten days of the concert, tickets gain an additional +1 quality.
-                        $item->quality++;
-                    }
-                    if ($item->sellIn <= 5) {
-                        // Within five days of the concert, tickets gain an additional +1 quality.
-                        $item->quality++;
-                    }
-                    break;
-                case $this->isLegendary($item):
-                    break;
-                default:
-                    $item->quality--;
-                    break;
-            }
-
-            // Constrain item quality.
-            if (! $this->isLegendary($item)) {
-                $item->quality = $this->clamp($item->quality, 0, 50);
-            }
-        }
-
-        // Update item sell-in date.
-        foreach ($this->items as $item) {
-            if ($this->isLegendary($item)) {
                 continue;
             }
 
             $item->sellIn--;
+            $item->quality--;
+        }
+
+        foreach ($this->items as $item) {
+            if (! $this->isLegendary($item)) {
+                $item->quality = $this->clamp($item->quality, 0, 50);
+            }
         }
     }
 
