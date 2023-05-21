@@ -16,52 +16,85 @@ final class GildedRose
 
     public function updateQuality(): void
     {
+        // Update item quality.
         foreach ($this->items as $item) {
-            if ($item->name != 'Aged Brie' and $item->name != 'Backstage passes to a TAFKAL80ETC concert') {
-                if ($item->quality > 0) {
-                    if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                        $item->quality--;
-                    }
+            if ($this->isExpired($item)) {
+                if ($this->isLegendary($item)) {
+                    // Legendary items do not decay.
+                    continue;
                 }
-            } else {
-                if ($item->quality < 50) {
+                if ($this->isBackStagePass($item)) {
+                    // Concert tickets are worthless after the event.
+                    $item->quality = 0;
+                }
+                // Expired items decay twice as fast.
+                $item->quality -= 2;
+
+                continue;
+            }
+
+            // Nonexpired items.
+            switch ($item) {
+                case $this->isAgedCheese($item):
                     $item->quality++;
-                    if ($item->name == 'Backstage passes to a TAFKAL80ETC concert') {
-                        if ($item->sellIn < 11) {
-                            if ($item->quality < 50) {
-                                $item->quality++;
-                            }
-                        }
-                        if ($item->sellIn < 6) {
-                            if ($item->quality < 50) {
-                                $item->quality++;
-                            }
-                        }
-                    }
-                }
-            }
+                    break;
+                case $this->isBackStagePass($item):
+                    $item->quality++;
 
-            if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                $item->sellIn--;
-            }
-
-            if ($item->sellIn < 0) {
-                if ($item->name != 'Aged Brie') {
-                    if ($item->name != 'Backstage passes to a TAFKAL80ETC concert') {
-                        if ($item->quality > 0) {
-                            if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                                $item->quality--;
-                            }
-                        }
-                    } else {
-                        $item->quality = 0;
-                    }
-                } else {
-                    if ($item->quality < 50) {
+                    if ($item->sellIn <= 10) {
+                        // Within ten days of the concert, tickets gain an additional +1 quality.
                         $item->quality++;
                     }
-                }
+                    if ($item->sellIn <= 5) {
+                        // Within five days of the concert, tickets gain an additional +1 quality.
+                        $item->quality++;
+                    }
+                    break;
+                case $this->isLegendary($item):
+                    break;
+                default:
+                    $item->quality--;
+                    break;
+            }
+
+            // Constrain item quality.
+            if (! $this->isLegendary($item)) {
+                $item->quality = $this->clamp($item->quality, 0, 50);
             }
         }
+
+        // Update item sell-in date.
+        foreach ($this->items as $item) {
+            if ($this->isLegendary($item)) {
+                continue;
+            }
+
+            $item->sellIn--;
+        }
+    }
+
+    public function isLegendary(Item $item): bool
+    {
+        return str_contains($item->name, 'Sulfuras');
+    }
+
+    public function isExpired(Item $item): bool
+    {
+        return $item->sellIn < 0;
+    }
+
+    public function isAgedCheese(Item $item): bool
+    {
+        return str_contains($item->name, 'Aged Brie');
+    }
+
+    public function isBackStagePass(Item $item): bool
+    {
+        return str_contains($item->name, 'Backstage passes');
+    }
+
+    public function clamp(int $number, int $min, int $max): int
+    {
+        return min(max($min, $number), $max);
     }
 }
