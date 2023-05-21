@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace GildedRose;
+namespace GildedRose\Items;
 
-use GildedRose\Items\AgedCheese;
-use GildedRose\Items\BackStagePass;
-use GildedRose\Items\Conjured;
-use GildedRose\Items\Legendary;
-use GildedRose\Items\Normal;
+use GildedRose\Item;
+use GildedRose\UpdateableItem;
 
 class UpdateableItemFactory
 {
