@@ -17,7 +17,7 @@ class GildedRoseTest extends TestCase
     {
         $app = new GildedRose([$item]);
 
-        $app->updateQuality();
+        $app->updateStock();
 
         $updatedItem = $app->items[0];
 

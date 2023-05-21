@@ -16,7 +16,7 @@ final class GildedRose
     ) {
     }
 
-    public function updateQuality(): void
+    public function updateStock(): void
     {
         array_map(
             function (Item $item): Item {
